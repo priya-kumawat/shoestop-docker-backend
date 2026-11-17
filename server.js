@@ -24,7 +24,28 @@ const startServer = async ()=>{
        
         await connectDB(process.env.mongoURI)
         console.log('connected to db');
-        app.listen(port , ()=>{
+        
+const mongoose = require('mongoose');
+const { placeOrder, getUserOrders } = require('./controllers/orderControllers');
+const protect = require('./middleware/authMiddleware');
+
+app.get('/api/health', (req, res) => {
+    const dbState = require('mongoose').connection.readyState === 1 ? 'Connected' : 'Disconnected';
+    res.status(200).json({
+        status: 'UP',
+        service: 'shoestop-docker-backend',
+        environment: process.env.NODE_ENV || 'production',
+        database: dbState,
+        uptimeSeconds: Math.floor(process.uptime()),
+        memoryMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
+        timestamp: new Date().toISOString()
+    });
+});
+
+app.post('/api/orders', protect, placeOrder);
+app.get('/api/orders', protect, getUserOrders);
+
+app.listen(port , ()=>{
             console.log(`server started at ${port}`);
         })
     }
