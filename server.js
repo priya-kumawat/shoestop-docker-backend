@@ -27,7 +27,6 @@ const startServer = async ()=>{
         
 const mongoose = require('mongoose');
 const { placeOrder, getUserOrders } = require('./controllers/orderControllers');
-const protect = require('./middleware/authMiddleware');
 
 app.get('/api/health', (req, res) => {
     const dbState = require('mongoose').connection.readyState === 1 ? 'Connected' : 'Disconnected';
