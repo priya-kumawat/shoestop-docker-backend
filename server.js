@@ -10,22 +10,7 @@ dotenv.config()
 const port = process.env.port
 
 app.use(express.json());
-app.use(cors())
 
-app.get('/', (req,res)=>{
-    res.send('hello world')
-})
-
-app.use('/' , userRoutes)
-app.use('/api' , productRoutes)
-
-const startServer = async ()=>{
-    try{
-       
-        await connectDB(process.env.mongoURI)
-        console.log('connected to db');
-        
-const mongoose = require('mongoose');
 const jwtOrder = require('jsonwebtoken');
 const verifyOrderToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -58,6 +43,23 @@ app.get('/api/health', (req, res) => {
 
 app.post('/api/orders', verifyOrderToken, placeOrder);
 app.get('/api/orders', verifyOrderToken, getUserOrders);
+
+app.use(cors())
+
+app.get('/', (req,res)=>{
+    res.send('hello world')
+})
+
+app.use('/' , userRoutes)
+app.use('/api' , productRoutes)
+
+const startServer = async ()=>{
+    try{
+       
+        await connectDB(process.env.mongoURI)
+        console.log('connected to db');
+        
+const mongoose = require('mongoose');
 
 app.listen(port , ()=>{
             console.log(`server started at ${port}`);
