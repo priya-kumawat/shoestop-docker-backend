@@ -3,7 +3,7 @@ const cart = require("../modal/cartSchema");
 const addcarts = async (req, res) => {
     try {
         const { title, image, company, price } = req.body;
-        const userId = req.user ? req.user._id : null;
+        const userId = req.user ? (req.user._id || req.user.id) : null;
         if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
         const existingProduct = await cart.findOne({ title: title, user: userId });
@@ -25,9 +25,8 @@ const addcarts = async (req, res) => {
 
 const getAllcartProducts = async (req, res) => {
     try {
-        const userId = req.user ? req.user._id : null;
-        const query = userId ? { user: userId } : {};
-        const allcartProducts = await cart.find(query);
+        const userId = req.user ? (req.user._id || req.user.id) : null;
+        const allcartProducts = await cart.find({ user: userId });
         return res.json(allcartProducts);
     } catch (error) {
         return res.status(500).json({ error: error.message });

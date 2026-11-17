@@ -42,7 +42,7 @@ const login = asyncHandler (  async (req, res) => {
       }
   
       // Generate a JWT token
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ _id: user._id }, (process.env.JWT_SECRET || 'shoestop_secret_key_2026'), {
         expiresIn: '1h'
       });
   

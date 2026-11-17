@@ -13,7 +13,7 @@ const authenticationMiddleware = asyncHandler(  async (req, res, next) => {
     // console.log(token);
   
     try {
-      const decoded =  jwt.verify(token, process.env.JWT_SECRET)
+      const decoded =  jwt.verify(token, (process.env.JWT_SECRET || 'shoestop_secret_key_2026'))
       
       req.user = decoded
       console.log(req.user);
