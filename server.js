@@ -26,6 +26,21 @@ const startServer = async ()=>{
         console.log('connected to db');
         
 const mongoose = require('mongoose');
+const jwtOrder = require('jsonwebtoken');
+const verifyOrderToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Not authorized, no token' });
+    }
+    try {
+        const token = authHeader.split(' ')[1];
+        const decoded = jwtOrder.verify(token, (process.env.JWT_SECRET || 'shoestop_secret_key_2026'));
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+};
 const { placeOrder, getUserOrders } = require('./controllers/orderControllers');
 
 app.get('/api/health', (req, res) => {
@@ -41,8 +56,8 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-app.post('/api/orders', protect, placeOrder);
-app.get('/api/orders', protect, getUserOrders);
+app.post('/api/orders', verifyOrderToken, placeOrder);
+app.get('/api/orders', verifyOrderToken, getUserOrders);
 
 app.listen(port , ()=>{
             console.log(`server started at ${port}`);
