@@ -9,6 +9,7 @@ dotenv.config()
 
 const port = process.env.port
 
+app.use(cors());
 app.use(express.json());
 
 const jwtOrder = require('jsonwebtoken');
